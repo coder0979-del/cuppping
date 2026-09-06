@@ -25,6 +25,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'coder0979@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'gtfk eypu kcye hvuo')
 DEFAULT_FROM_EMAIL = 'مركز الحجامة <coder0979@gmail.com>'
+EMAIL_FAIL_SILENTLY = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
