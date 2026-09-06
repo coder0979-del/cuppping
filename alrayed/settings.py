@@ -66,14 +66,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'alrayed.wsgi.application'
-
 # 🗄️ إعداد قاعدة بيانات PostgreSQL
+db_url = os.environ.get('DATABASE_URL')
+if not db_url:
+    db_url = 'postgres://postgres:123456@localhost:5432/alrayed_db'
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get(
-            'DATABASE_URL',
-            'postgres://postgres:123456@localhost:5432/alrayed_db'
-        ),
+    'default': dj_database_url.parse(
+        db_url,
         conn_max_age=600,
         ssl_require=not DEBUG
     )
