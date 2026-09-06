@@ -29,9 +29,7 @@
         <a href="{% url 'add_patient_appointment' %}">+ حجز موعد جديد</a>
       </li>
       {% if user.is_authenticated %}
-      <li>
-        <a href="{% url 'change_password' %}">🔒 تغيير كلمة المرور</a>
-      </li>
+
       <li>
         <form action="{% url 'logout' %}" method="post" style="padding: 10px 25px;">
           {% csrf_token %}
