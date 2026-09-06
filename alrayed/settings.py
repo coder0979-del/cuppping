@@ -66,9 +66,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'alrayed.wsgi.application'
+
+
 # 🗄️ إعداد قاعدة بيانات PostgreSQL
-db_url = os.environ.get('DATABASE_URL')
-if not db_url:
+# 🗄️ إعداد قاعدة البيانات - معالجة آمنة لـ DATABASE_URL
+db_url = os.environ.get('DATABASE_URL', '').strip()
+
+# إذا كان المتغير غير موجود أو يحتوي على قيمة مشوهة مثل '://'
+if not db_url or db_url == '://' or not db_url.startswith(('postgres://', 'postgresql://', 'sqlite://')):
     db_url = 'postgres://postgres:123456@localhost:5432/alrayed_db'
 
 DATABASES = {
@@ -78,6 +83,7 @@ DATABASES = {
         ssl_require=not DEBUG
     )
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
