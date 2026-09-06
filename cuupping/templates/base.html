@@ -56,9 +56,7 @@
       {% endif %}
 
       <!-- روابط الحساب والمسؤوليات -->
-      <li>
-        <a href="{% url 'change_password' %}">🔒 تغيير كلمة المرور</a>
-      </li>
+      
       <li>
         <form action="{% url 'logout' %}" method="post" style="padding: 10px 25px;">
           {% csrf_token %}
