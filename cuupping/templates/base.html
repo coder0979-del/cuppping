@@ -3,64 +3,58 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}مركز الحجامة{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>{% block title %}مركز الرائد للطب البديل والحجامة{% endblock %}</title>
+
+  <!-- رابط خط القاهرة -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-  <!-- الشريط الجانبي الثابت -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h3>🏥 مركز الحجامة</h3>
+  <!-- 1. الشريط المضيء المتحرك بالأعلى -->
+  <div class="top-announcement-bar">
+    <div class="animated-flash-text">
+      ✨ مرحباً بكم في مركز الرائد للطب البديل والحجامة — نعتني بصحتكم بأعلى معايير الجودة والأمان ✨
     </div>
-    <ul class="sidebar-menu">
-      <li class="{% block nav_home %}{% endblock %}">
-        <a href="/">الرئيسية</a>
-      </li>
-      <li class="{% block nav_reception %}{% endblock %}">
-        <a href="{% url 'reception_dashboard' %}">لوحة الاستقبال</a>
-      </li>
-      <li class="{% block nav_doctor %}{% endblock %}">
-        <a href="{% url 'doctor_dashboard' %}">عيادة المعالج</a>
-      </li>
-      <li>
-        <a href="{% url 'add_patient_appointment' %}">+ حجز موعد جديد</a>
-      </li>
-      {% if user.is_authenticated %}
-
-      <li>
-        <form action="{% url 'logout' %}" method="post" style="padding: 10px 25px;">
-          {% csrf_token %}
-          <button type="submit" class="logout-btn">تسجيل الخروج</button>
-        </form>
-      </li>
-      {% else %}
-      <li>
-        <a href="{% url 'login' %}">تسجيل الدخول</a>
-      </li>
-      {% endif %}
-    </ul>
-  </aside>
-
-  <!-- الحاوية الرئيسية للمحتوى -->
-  <div class="main-wrapper">
-    <header class="navbar">
-      <div class="brand-logo">
-        <h2>{% block page_title %}لوحة التحكم{% endblock %}</h2>
-      </div>
-      <div class="nav-links">
-        {% if user.is_authenticated %}
-          <span>أهلاً بك، <strong>{{ user.username }}</strong></span>
-        {% endif %}
-      </div>
-    </header>
-
-    <main class="main-container">
-      {% block content %}{% endblock %}
-    </main>
   </div>
+
+  <!-- 2. شريط التنقل العلوي -->
+  <nav class="navbar">
+    <a href="/" class="brand-logo">
+      <img src="{% static 'img/logo.jpg' %}" alt="شعار مركز الرائد" onerror="this.style.display='none'">
+      
+    </a>
+
+    <div class="nav-links">
+      {% if user.is_authenticated %}
+        <span style="font-size: 0.85rem; font-weight: bold; color: #0284c7;">
+          👤 {{ user.get_full_name|default:user.username }}
+        </span>
+        {% if is_receptionist or user.is_superuser %}
+          <a href="{% url 'reception_dashboard' %}">الاستقبال</a>
+        {% else %}
+          <a href="{% url 'doctor_dashboard' %}">لوحة الطبيب</a>
+        {% endif %}
+      
+        <a href="{% url 'logout' %}" style="color: #dc2626;">خروج</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn-login-nav">تسجيل الدخول</a>
+        <a href="{% url 'register' %}">إنشاء حساب</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- 3. محتوى الصفحات الفرعية -->
+  <main class="main-container">
+    {% block content %}
+    {% endblock %}
+  </main>
 
 </body>
 </html>
