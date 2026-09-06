@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}العيادة - لوحة المعالج{% endblock %}
+{% block page_title %}لوحة الطبيب المعالج{% endblock %}
+{% block nav_doctor %}active{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <h4>المرضى بانتظار الجلسة</h4>
+    <div class="value" style="color: #e67e22;">{{ waiting_patients.count }}</div>
+  </div>
+  <div class="stat-card">
+    <h4>الجلسات المكتملة اليوم</h4>
+    <div class="value" style="color: #27ae60;">{{ completed_count }}</div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div class="table-header">
+    <h3>قائمة الانتظار في العيادة</h3>
+  </div>
+
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>الموعد</th>
+        <th>اسم المريض</th>
+        <th>العمر / الجنس</th>
+        <th>نوع الحجامة المطلوبة</th>
+        <th>الإجراء الطبية</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for app in waiting_patients %}
+      <tr>
+        <td>{{ app.appointment_time|time:"h:i A" }}</td>
+        <td><strong>{{ app.patient.full_name }}</strong></td>
+        <td>{{ app.patient.age }} سنة / {{ app.patient.get_gender_display }}</td>
+        <td>{{ app.get_cupping_type_display }}</td>
+        <td>
+          <a href="{% url 'start_cupping_session' app.id %}" style="background-color: #27ae60; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.85rem;">
+            استدعاء وبدء الجلسة 🩺
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">لا يوجد مرضى بانتظار الجلسة حالياً.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

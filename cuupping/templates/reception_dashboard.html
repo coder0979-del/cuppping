@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}الاستقبال - لوحة التحكم{% endblock %}
+{% block page_title %}شاشة الاستقبال والحجوزات{% endblock %}
+{% block nav_reception %}active{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <h4>إجمالي حجوزات اليوم</h4>
+    <div class="value">{{ total_appointments }}</div>
+  </div>
+  <div class="stat-card">
+    <h4>في الانتظار الآن</h4>
+    <div class="value" style="color: #e67e22;">{{ waiting_count }}</div>
+  </div>
+  <div class="stat-card">
+    <h4>داخل عيادة العلاج</h4>
+    <div class="value" style="color: #2980b9;">{{ in_session_count }}</div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h3>قائمة وصول المرضى اليوم</h3>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'add_patient_appointment' %}" class="btn-primary" style="background-color: var(--primary-color); color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700;">+ حجز / تسجيل وصول</a>
+    </div>
+  </div>
+
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>وقت الموعد</th>
+        <th>اسم المريض</th>
+        <th>رقم الجوال</th>
+        <th>نوع الحجامة</th>
+        <th>حالة الحضور</th>
+        <th>الإجراء</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for app in appointments %}
+      <tr>
+
+        
+        <td>{{ app.appointment_time|time:"h:i A" }}</td>
+        <td><strong>{{ app.patient.full_name }}</strong></td>
+        <td>{{ app.patient.phone }}</td>
+        <td>{{ app.get_cupping_type_display }}</td>
+        <td>
+          {% if app.status == 'waiting' %}
+            <span class="badge badge-warning">في الانتظار</span>
+          {% elif app.status == 'in_session' %}
+            <span class="badge badge-info">داخل العيادة</span>
+          {% else %}
+            <span class="badge badge-success">مكتمل</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if app.status == 'waiting' %}
+            <a href="#" style="color: #27ae60; font-weight: 700; text-decoration: none;">تأكيد الدخول للعيادة ←</a>
+          {% else %}
+            <span style="color: var(--text-muted);">-</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 20px;">لا توجد مواعيد مسجلة اليوم حتى الآن.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+</div>
+{% endblock %}

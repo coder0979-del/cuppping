@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{%load static%}
+{% block title %}تسجيل الدخول - نظام العيادة{% endblock %}
+{% block page_title %}تسجيل الدخول للنظام{% endblock %}
+
+
+{% block content %}
+<div class="form-container">
+  <h3>تسجيل الدخول</h3>
+  
+  {% if messages %}
+    {% for message in messages %}
+      <div style="padding: 10px; margin-bottom: 15px; border-radius: 8px; background-color: #fef2f2; color: #991b1b; font-size: 0.85rem; text-align: center;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>البريد الإلكتروني</label>
+      <input type="email" name="email" required placeholder="example@domain.com" class="form-control">
+    </div>
+    
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" name="password" required placeholder="••••••••" class="form-control">
+    </div>
+
+    <button type="submit" class="btn-primary" style="margin-top: 10px;">دخول للنظام</button>
+  </form>
+<div style="text-align: left; margin-bottom: 15px;">
+  <a href="{% url 'password_reset' %}" style="font-size: 0.85rem; color: #4f46e5; text-decoration: none;">
+    نسيت كلمة المرور؟
+  </a>
+</div>
+  <p style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: #64748b;">
+    ليس لديك حساب؟ <a href="{% url 'register' %}" style="color: #4f46e5; font-weight: 700; text-decoration: none;">إنشاء حساب جديد</a>
+  </p>
+</div>
+{% endblock %}

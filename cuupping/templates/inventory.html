@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}إدارة المخزون والمستلزمات{% endblock %}
+{% block page_title %}إدارة مخزون أدوات الحجامة والمستلزمات{% endblock %}
+{% block nav_inventory %}active{% endblock %}
+
+{% block content %}
+<!-- كروت إحصائيات المخزون -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <h4>إجمالي أصناف المخزون</h4>
+    <div class="value">14 صنف</div>
+  </div>
+  <div class="stat-card">
+    <h4>كؤوس الحجامة المتاحة</h4>
+    <div class="value" style="color: #27ae60;">1,250 كأس</div>
+  </div>
+  <div class="stat-card">
+    <h4>أصناف قاربت على النفاد</h4>
+    <div class="value" style="color: #e74c3c;">2 أصناف</div>
+  </div>
+</div>
+
+<!-- جدول عناصر المخزون -->
+<div class="table-container">
+  <div class="table-header">
+    <h3>قائمة المستلزمات الطبية</h3>
+    <a href="#" class="btn-primary">+ إضافة صنف جديد</a>
+  </div>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>كود الصنف</th>
+        <th>اسم الصنف / الأدوات</th>
+        <th>الفئة</th>
+        <th>الكمية المتاحة</th>
+        <th>حالة المخزون</th>
+        <th>الإجراءات</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#INV-001</td>
+        <td>كؤوس حجامة بلاستيكية (مقاس 1)</td>
+        <td>كؤوس استخدام واحد</td>
+        <td>450 قطعة</td>
+        <td><span class="badge badge-success">متوفر</span></td>
+        <td><a href="#" style="color: var(--primary-color); font-weight: 700; text-decoration: none;">تعديل / توريد</a></td>
+      </tr>
+      <tr>
+        <td>#INV-002</td>
+        <td>كؤوس حجامة بلاستيكية (مقاس 2)</td>
+        <td>كؤوس استخدام واحد</td>
+        <td>18 قطعة</td>
+        <td><span class="badge" style="background-color: #FED7D7; color: #C53030;">مخزون منخفض</span></td>
+        <td><a href="#" style="color: var(--primary-color); font-weight: 700; text-decoration: none;">تعديل / توريد</a></td>
+      </tr>
+      <tr>
+        <td>#INV-003</td>
+        <td>شفرات تشريط معقمة (قياس طب)</td>
+        <td>مستلزمات معقمة</td>
+        <td>320 شفرة</td>
+        <td><span class="badge badge-success">متوفر</span></td>
+        <td><a href="#" style="color: var(--primary-color); font-weight: 700; text-decoration: none;">تعديل / توريد</a></td>
+      </tr>
+      <tr>
+        <td>#INV-004</td>
+        <td>زيت حبة سوداء (عبوة 500 مل)</td>
+        <td>زيوت ومطهرات</td>
+        <td>2 عبوة</td>
+        <td><span class="badge" style="background-color: #FED7D7; color: #C53030;">مخزون منخفض</span></td>
+        <td><a href="#" style="color: var(--primary-color); font-weight: 700; text-decoration: none;">تعديل / توريد</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

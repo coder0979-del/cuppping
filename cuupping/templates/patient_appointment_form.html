@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}تسجيل مريض وموعد جديد{% endblock %}
+{% block page_title %}تسجيل مريض وحجز موعد جديد{% endblock %}
+{% block nav_reception %}active{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <form method="post" action="">
+    {% csrf_token %}
+    
+    <!-- قسم البيانات الشخصية للمريض -->
+    <div class="form-section">
+      <h3 class="section-title">بيانات المريض الأساسية</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="full_name">اسم المريض بالكامل *</label>
+            <input type="text" name="full_name" placeholder="أدخل اسم المريض الثلاثي" required class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">رقم الهاتف *</label>
+          <input type="tel" id="phone" name="phone" placeholder="05xxxxxxxx" required>
+        </div>
+
+        <div class="form-group">
+          <label for="gender">الجنس *</label>
+          <select id="gender" name="gender" required>
+            <option value="">اختر الجنس</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="age">العمر *</label>
+          <input type="number" id="age" name="age" placeholder="مثال: 35" min="1" max="120" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم تفاصيل الحجز والموعد -->
+    <div class="form-section" style="margin-top: 25px;">
+      <h3 class="section-title">تفاصيل الحجز والموعد</h3>
+      <div class="form-grid">
+        <div class="form-group">
+  <label>الطبيب / المعالج المختص</label>
+  <select name="doctor" required class="form-control">
+    <option value="">-- اختر المعالج المسجل --</option>
+    {% for doctor in doctors %}
+      <option value="{{ doctor.id }}">
+        {% if doctor.get_full_name %}
+          د. {{ doctor.get_full_name }}
+        {% else %}
+          د. {{ doctor.first_name|default:doctor.username }}
+        {% endif %}
+      </option>
+    {% empty %}
+      <option value="" disabled>لا يوجد أطباء مسجلون حالياً في النظام</option>
+    {% endfor %}
+  </select>
+</div>
+
+        <div class="form-group">
+          <label for="appointment_date">تاريخ الموعد *</label>
+          <input type="date" id="appointment_date" name="appointment_date" required>
+        </div>
+
+        <div class="form-group">
+          <label for="appointment_time">وقت الموعد *</label>
+          <input type="time" id="appointment_time" name="appointment_time" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cupping_type">نوع الحجامة المطلوبة</label>
+          <select id="cupping_type" name="cupping_type">
+            <option value="preventive">حجامة وقائية</option>
+            <option value="therapeutic">حجامة علاجية</option>
+            <option value="dry">حجامة جافة (كؤوس فقط)</option>
+            <option value="massage">حجامة متزحلقة (تدليكية)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- زر الحفظ والإرسال -->
+    <div class="form-actions">
+      <button type="submit" class="btn-submit">تأكيد وتأكيد الحجز 💾</button>
+      <a href="#" class="btn-cancel">إلغاء</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

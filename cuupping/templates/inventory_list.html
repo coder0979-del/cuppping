@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}إدارة المخزون{% endblock %}
+{% block page_title %}إدارة مخزون العيادة{% endblock %}
+
+{% block content %}
+<div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0;">
+  
+  <!-- رأس الصفحة وزر إضافة صنف جديد -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h3 style="margin: 0;">قائمة الأدوية والمستلزمات</h3>
+    <a href="{% url 'add_inventory_item' %}" class="btn-primary" style="padding: 8px 16px; text-decoration: none; background-color: #4f46e5; color: white; border-radius: 8px; font-weight: 600;">
+      + إضافة صنف جديد
+    </a>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse; text-align: right;">
+    <thead>
+      <tr style="border-bottom: 2px solid #cbd5e1; background-color: #f8fafc;">
+        <th style="padding: 12px;">كود الصنف</th>
+        <th style="padding: 12px;">اسم الصنف</th>
+        <th style="padding: 12px;">الفئة</th>
+        <th style="padding: 12px;">الكمية الحالية (كرتون)</th>
+        <th style="padding: 12px;">سعر الكرتون (د.إ)</th>
+        <th style="padding: 12px;">الإجراءات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #64748b; font-size: 0.9rem;">{{ item.item_code }}</td>
+        <td style="padding: 12px; font-weight: 600;">{{ item.name }}</td>
+        <td style="padding: 12px;">{{ item.get_category_display }}</td>
+        <td style="padding: 12px;">
+          <span style="font-weight: 700; {% if item.is_low_stock %}color: #dc2626;{% endif %}">
+            {{ item.quantity }} كرتون
+          </span>
+        </td>
+        <td style="padding: 12px;">{{ item.unit_price }} د.إ</td>
+        <td style="padding: 12px; display: flex; gap: 8px; align-items: center;">
+          
+          <!-- نموذج توريد كمية بالكراتين -->
+          <form action="{% url 'add_inventory_stock' item.id %}" method="post" style="display: flex; gap: 5px;">
+            {% csrf_token %}
+            <input type="number" name="quantity" placeholder="+ كراتين" min="1" required style="width: 85px; padding: 5px; border-radius: 6px; border: 1px solid #cbd5e1;">
+            <button type="submit" class="btn-primary" style="padding: 5px 10px; font-size: 0.85rem; background-color: #10b981; border: none; border-radius: 6px; color: white; cursor: pointer;">توريد</button>
+          </form>
+
+          <!-- زر تعديل الصنف -->
+          <a href="{% url 'edit_inventory_item' item.id %}" style="padding: 6px 12px; border-radius: 6px; background-color: #f59e0b; color: white; text-decoration: none; font-size: 0.85rem; font-weight: 600;">تعديل</a>
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">لا توجد أصناف في المخزون حالياً.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

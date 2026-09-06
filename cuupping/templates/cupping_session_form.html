@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}تسجيل جلسة حجامة جديدة{% endblock %}
+{% block page_title %}إجراء وتسجيل جلسة حجامة{% endblock %}
+{% block nav_doctor %}active{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  
+  <!-- بطاقة ملخص المريض السريعة -->
+  <div class="patient-summary-card">
+    <div>
+      <strong>اسم المريض:</strong> عبدالله بن علي (#P-1042)
+    </div>
+    <div>
+      <strong>العمر:</strong> 38 سنة
+    </div>
+    <div>
+      <strong>الشكوى الأساسية:</strong> آلام في أسفل الظهر وصداع متكرر
+    </div>
+  </div>
+
+  <form method="post" action="">
+    {% csrf_token %}
+    
+    <!-- القياسات الحيوية قبل الجلسة -->
+    <div class="form-section">
+      <h3 class="section-title">🩺 القياسات الحيوية والتاريخ الطبي السريع</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="bp_before">ضغط الدم (قبل الجلسة) *</label>
+          <input type="text" id="bp_before" name="bp_before" placeholder="مثال: 120/80" required>
+        </div>
+
+        <div class="form-group">
+          <label for="blood_sugar">مستوى السكر في الدم (إن وجد)</label>
+          <input type="text" id="blood_sugar" name="blood_sugar" placeholder="مثال: 110 mg/dL">
+        </div>
+
+        <div class="form-group">
+          <label for="chronic_diseases">الأمراض المزمنة / تنبيهات طبية</label>
+          <input type="text" id="chronic_diseases" name="chronic_diseases" placeholder="مثال: مسيلات دم، سيولة، سكري...">
+        </div>
+      </div>
+    </div>
+
+    <!-- تفاصيل ومواضع الحجامة -->
+    <div class="form-section" style="margin-top: 25px;">
+      <h3 class="section-title">📍 تحديد مواقع الكؤوس والمستلزمات</h3>
+      
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label>مواضع الحجامة المستهدفة (اختر المواضع):</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-item"><input type="checkbox" name="points" value="C7"> الكاهل (C7)</label>
+          <label class="checkbox-item"><input type="checkbox" name="points" value="T1_T2"> بين الكتفين (T1-T2)</label>
+          <label class="checkbox-item"><input type="checkbox" name="points" value="L4_L5"> أسفل الظهر (L4-L5)</label>
+          <label class="checkbox-item"><input type="checkbox" name="points" value="head"> هامة الرأس</label>
+          <label class="checkbox-item"><input type="checkbox" name="points" value="knees"> الركبتين</label>
+          <label class="checkbox-item"><input type="checkbox" name="points" value="joints"> المفاصل</label>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="cups_count">عدد الكؤوس المستخدمة (لخصمها من المخزون) *</label>
+          <input type="number" id="cups_count" name="cups_count" value="6" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="oil_type">نوع الزيت المستخدم</label>
+          <select id="oil_type" name="oil_type">
+            <option value="olive">زيت زيتون</option>
+            <option value="black_seed">زيت الحبة السوداء</option>
+            <option value="sesame">زيت سمسم</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="bp_after">ضغط الدم (بعد الجلسة)</label>
+          <input type="text" id="bp_after" name="bp_after" placeholder="مثال: 118/78">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 15px;">
+        <label for="doctor_notes">ملاحظات الطبيب والمعالج وتوصيات المتابعة</label>
+        <textarea id="doctor_notes" name="doctor_notes" rows="3" placeholder="أدخل الملاحظات، شرب الماء، تجنب أطعمة معينة..."></textarea>
+      </div>
+    </div>
+
+    <!-- زر الحفظ والإرسال -->
+    <div class="form-actions">
+      <button type="submit" class="btn-submit">حفظ وإنهاء الجلسة ✅</button>
+      <a href="#" class="btn-cancel">إلغاء</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

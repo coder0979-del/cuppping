@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block title %}إضافة صنف جديد{% endblock %}
+{% block page_title %}إضافة صنف للمخزون{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 500px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px;">
+  <h3 style="margin-bottom: 20px;">بيانات الصنف الجديد</h3>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label>كود الصنف (Item Code)</label>
+      <input type="text" name="item_code" required class="form-control" placeholder="مثال: CUP-01">
+    </div>
+
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label>اسم الصنف / الأدوات</label>
+      <input type="text" name="name" required class="form-control" placeholder="مثال: كؤوس حجامة مقاس 3">
+    </div>
+
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label>الفئة</label>
+      <select name="category" class="form-control" required>
+        <option value="cups">كؤوس استخدام واحد</option>
+        <option value="blades">مستلزمات معقمة (شفرات)</option>
+        <option value="oils">زيوت ومطهرات</option>
+        <option value="general">مستلزمات عامة</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label>الكمية الأولية</label>
+      <input type="number" name="quantity" required class="form-control" value="0">
+    </div>
+
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label>سعر التكلفة (ر.س)</label>
+      <input type="number" step="0.01" name="unit_price" required class="form-control" value="0.00">
+    </div>
+
+    <button type="submit" class="btn-primary" style="width: 100%; padding: 10px; background-color: #4f46e5; color: white; border: none; border-radius: 6px;">حفظ الصنف</button>
+  </form>
+</div>
+{% endblock %}

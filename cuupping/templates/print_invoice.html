@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}فاتورة رقم {{ invoice.invoice_number }}{% endblock %}
+
+{% block content %}
+<style>
+  /* إخفاء عناصر التحكم والأزرار أثناء الطباعة الفعلية */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    body {
+      background: white !important;
+      padding: 0 !important;
+    }
+    .invoice-card {
+      border: none !important;
+      box-shadow: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 0 !important;
+    }
+  }
+
+  .invoice-card {
+    max-width: 650px;
+    margin: 30px auto;
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    font-family: 'Cairo', sans-serif;
+  }
+</style>
+
+<!-- شريط أزرار التحكم العليا (يختفي عند الطباعة) -->
+<div class="no-print" style="max-width: 650px; margin: 15px auto; display: flex; justify-content: space-between; align-items: center;">
+  <a href="{% url 'finance_list' %}" style="text-decoration: none; color: #475569; font-weight: bold;">➡️ العودة إلى التقرير المالي</a>
+  <button onclick="window.print()" style="padding: 10px 20px; background-color: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+    🖨️ طباعة الفاتورة
+  </button>
+</div>
+
+<!-- تصميم الفاتورة -->
+<div class="invoice-card">
+  <!-- هيدر الفاتورة / العيادة -->
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 25px;">
+    <div>
+      <h2 style="margin: 0; color: #0f172a; font-size: 1.5rem;">مركز الحجامة والطب البديل</h2>
+      <p style="margin: 5px 0 0; color: #64748b; font-size: 0.85rem;">فاتورة خدمات علاجية</p>
+    </div>
+    <div style="text-align: left;">
+      <h3 style="margin: 0; color: #2563eb; font-size: 1.2rem;">{{ invoice.invoice_number }}</h3>
+      <p style="margin: 5px 0 0; color: #64748b; font-size: 0.85rem;">التاريخ: {{ invoice.created_at|date:"Y-m-d" }}</p>
+    </div>
+  </div>
+
+  <!-- بيانات المريض والموعد -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+    <div>
+      <span style="color: #64748b; font-size: 0.85rem; display: block;">اسم المريض:</span>
+      <strong style="color: #1e293b; font-size: 1.05rem;">
+        {% if invoice.appointment and invoice.appointment.patient %}
+          {{ invoice.appointment.patient.full_name }}
+        {% else %}
+          غير محدد
+        {% endif %}
+      </strong>
+    </div>
+    <div>
+      <span style="color: #64748b; font-size: 0.85rem; display: block;">رقم الهاتف:</span>
+      <strong style="color: #1e293b;">
+        {% if invoice.appointment and invoice.appointment.patient %}
+          {{ invoice.appointment.patient.phone }}
+        {% else %}
+          -
+        {% endif %}
+      </strong>
+    </div>
+    <div>
+      <span style="color: #64748b; font-size: 0.85rem; display: block;">نوع الخدمة / الجلسة:</span>
+      <strong style="color: #1e293b;">
+        {% if invoice.appointment %}
+          {{ invoice.appointment.get_cupping_type_display }}
+        {% else %}
+          جلسة حجامة
+        {% endif %}
+      </strong>
+    </div>
+    <div>
+      <span style="color: #64748b; font-size: 0.85rem; display: block;">حالة الفاتورة:</span>
+      <strong style="color: {% if invoice.status == 'paid' %}#059669{% else %}#d97706{% endif %};">
+        {{ invoice.get_status_display }}
+      </strong>
+    </div>
+  </div>
+
+  <!-- جدول تفاصيل المبالغ -->
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+    <thead>
+      <tr style="border-bottom: 2px solid #e2e8f0; background: #f1f5f9; text-align: right;">
+        <th style="padding: 10px;">الوصف</th>
+        <th style="padding: 10px; text-align: left;">المبلغ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #f1f5f9;">
+        <td style="padding: 12px;">رسوم جلسة حجامة وتكلفة الكؤوس والمستلزمات</td>
+        <td style="padding: 12px; text-align: left; font-weight: bold;">{{ invoice.total_amount }} د.إ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ملخص الإجمالي وطريقة الدفع -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; border-top: 2px solid #f1f5f9; padding-top: 20px;">
+    <div>
+      <p style="margin: 0; color: #64748b; font-size: 0.85rem;">طريقة الدفع: <strong>{{ invoice.get_payment_method_display }}</strong></p>
+    </div>
+    <div style="text-align: left;">
+      <span style="color: #64748b; font-size: 0.9rem;">المبلغ الإجمالي المطلوب:</span>
+      <h2 style="margin: 5px 0 0; color: #0f172a; font-size: 1.8rem;">{{ invoice.total_amount }} <span style="font-size: 1rem;">د.إ</span></h2>
+    </div>
+  </div>
+
+  <!-- توقيع وملاحظات ختامية -->
+  <div style="margin-top: 40px; padding-top: 20px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; text-align: center; color: #64748b; font-size: 0.85rem;">
+    <div>
+      <p style="margin-bottom: 40px;">توقيع الاستقبال</p>
+      <p>____________________</p>
+    </div>
+    <div>
+      <p style="margin-bottom: 5px; font-weight: bold; color: #1e293b;">شكراً لزيارتكم</p>
+      <p style="margin: 0;">نتمنى لكم دوام الصحة والعافية</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

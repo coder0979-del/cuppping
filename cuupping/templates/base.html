@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>{% block title %}مركز الرائد للطب البديل والحجامة{% endblock %}</title>
+
+  <!-- رابط خط القاهرة -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- 1. الشريط المضيء المتحرك بالأعلى -->
+  <div class="top-announcement-bar">
+    <div class="animated-flash-text">
+      ✨ مرحباً بكم في مركز الرائد للطب البديل والحجامة — نعتني بصحتكم بأعلى معايير الجودة والأمان ✨
+    </div>
+  </div>
+
+  <!-- 2. شريط التنقل العلوي -->
+  <nav class="navbar">
+    <a href="/" class="brand-logo">
+      <img src="{% static 'img/logo.jpg' %}" alt="شعار مركز الرائد" onerror="this.style.display='none'">
+      
+    </a>
+
+    <div class="nav-links">
+      {% if user.is_authenticated %}
+        <span style="font-size: 0.85rem; font-weight: bold; color: #0284c7;">
+          👤 {{ user.get_full_name|default:user.username }}
+        </span>
+        {% if is_receptionist or user.is_superuser %}
+          <a href="{% url 'reception_dashboard' %}">الاستقبال</a>
+        {% else %}
+          <a href="{% url 'doctor_dashboard' %}">لوحة الطبيب</a>
+        {% endif %}
+        <a href="{% url 'change_password' %}">🔑 كلمة المرور</a>
+        <a href="{% url 'logout' %}" style="color: #dc2626;">خروج</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn-login-nav">تسجيل الدخول</a>
+        <a href="{% url 'register' %}">إنشاء حساب</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- 3. محتوى الصفحات الفرعية -->
+  <main class="main-container">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+</body>
+</html>
