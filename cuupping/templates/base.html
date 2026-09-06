@@ -24,37 +24,80 @@
     </div>
   </div>
 
-  <!-- 2. شريط التنقل العلوي -->
-  <nav class="navbar">
-    <a href="/" class="brand-logo">
-      <img src="{% static 'img/logo.jpg' %}" alt="شعار مركز الرائد" onerror="this.style.display='none'">
-      
-    </a>
-
-    <div class="nav-links">
-      {% if user.is_authenticated %}
-        <span style="font-size: 0.85rem; font-weight: bold; color: #0284c7;">
-          👤 {{ user.get_full_name|default:user.username }}
-        </span>
-        {% if is_receptionist or user.is_superuser %}
-          <a href="{% url 'reception_dashboard' %}">الاستقبال</a>
-        {% else %}
-          <a href="{% url 'doctor_dashboard' %}">لوحة الطبيب</a>
-        {% endif %}
-      
-        <a href="{% url 'logout' %}" style="color: #dc2626;">خروج</a>
-      {% else %}
-        <a href="{% url 'login' %}" class="btn-login-nav">تسجيل الدخول</a>
-        <a href="{% url 'register' %}">إنشاء حساب</a>
-      {% endif %}
+  {% if user.is_authenticated %}
+  <!-- 2. الشريط الجانبي الداخلي (السايدبار) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="brand-logo" style="color: #fff; text-decoration: none;">
+        <h3>🏥 مركز الرائد</h3>
+      </a>
     </div>
-  </nav>
 
-  <!-- 3. محتوى الصفحات الفرعية -->
-  <main class="main-container">
-    {% block content %}
-    {% endblock %}
-  </main>
+    <ul class="sidebar-menu">
+      <li>
+        <a href="/">🏠 الرئيسية</a>
+      </li>
+
+      <!-- روابط مخصصة لموظف الاستقبال -->
+      {% if is_receptionist or user.is_superuser %}
+        <li class="{% block nav_reception %}{% endblock %}">
+          <a href="{% url 'reception_dashboard' %}">📋 لوحة الاستقبال</a>
+        </li>
+        <li>
+          <a href="{% url 'add_patient_appointment' %}">➕ حجز موعد جديد</a>
+        </li>
+      {% endif %}
+
+      <!-- روابط مخصصة للطبيب المعالج -->
+      {% if is_doctor or user.is_superuser %}
+        <li class="{% block nav_doctor %}{% endblock %}">
+          <a href="{% url 'doctor_dashboard' %}">🩺 لوحة الطبيب</a>
+        </li>
+      {% endif %}
+
+      <!-- روابط الحساب والمسؤوليات -->
+      <li>
+        <a href="{% url 'change_password' %}">🔒 تغيير كلمة المرور</a>
+      </li>
+      <li>
+        <form action="{% url 'logout' %}" method="post" style="padding: 10px 25px;">
+          {% csrf_token %}
+          <button type="submit" class="logout-btn">🚪 تسجيل الخروج</button>
+        </form>
+      </li>
+    </ul>
+  </aside>
+  {% endif %}
+
+  <!-- 3. الحاوية الرئيسية للهيكل والمحتوى -->
+  <div class="{% if user.is_authenticated %}main-wrapper{% else %}landing-wrapper{% endif %}">
+    
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar">
+      <a href="/" class="brand-logo">
+        <img src="{% static 'img/logo.jpg' %}" alt="شعار مركز الرائد" onerror="this.style.display='none'">
+        <h2>{% block page_title %}لوحة التحكم{% endblock %}</h2>
+      </a>
+
+      <div class="nav-links">
+        {% if user.is_authenticated %}
+          <span style="font-size: 0.9rem; font-weight: bold; color: #0284c7;">
+            👤 {{ user.get_full_name|default:user.username }}
+          </span>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login-nav">تسجيل الدخول</a>
+          <a href="{% url 'register' %}">إنشاء حساب</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- محتوى الصفحات الفرعية -->
+    <main class="main-container">
+      {% block content %}
+      {% endblock %}
+    </main>
+
+  </div>
 
 </body>
 </html>
